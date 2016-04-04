@@ -336,8 +336,11 @@ namespace Porrey.RgbLed
 			{
 				// Create an instance of the color with alpha at 95%
 				return Color.FromArgb((byte)(byte.MaxValue * .95),
-			}
-		}
+                    (byte)(byte.MaxValue * _redValue),
+                    (byte)(byte.MaxValue * _greenValue),
+                    (byte)(byte.MaxValue * _blueValue));
+            }
+        }
 
 		/// <summary>
 		/// Gets the Maximum value used by the value sliders
