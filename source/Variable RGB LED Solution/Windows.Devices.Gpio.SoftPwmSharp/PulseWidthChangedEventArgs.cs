@@ -14,7 +14,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with SoftPwmSharp.  If not, see http://www.gnu.org/licenses/.
-//
+
 using System;
 
 namespace Windows.Devices.Gpio.SoftPwmSharp
@@ -30,7 +30,7 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		/// </summary>
 		/// <param name="highPulseWidth"></param>
 		/// <param name="lowPulseWidth"></param>
-		public PulseWidthChangedEventArgs(double highPulseWidth, double lowPulseWidth)
+		public PulseWidthChangedEventArgs(TimeSpan highPulseWidth, TimeSpan lowPulseWidth)
 		{
 			this.HighPulseWidth = highPulseWidth;
 			this.LowPulseWidth = lowPulseWidth;
@@ -39,11 +39,18 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		/// <summary>
 		/// Gets the length in μs (micro-seconds) of the high pulse.
 		/// </summary>
-		public double HighPulseWidth { get; protected set; } = 0d;
+		public TimeSpan HighPulseWidth { get; private set; }
 
 		/// <summary>
 		/// Gets the length in μs (micro-seconds) of the low pulse.
 		/// </summary>
-		public double LowPulseWidth { get; protected set; } = 0d;
+		public TimeSpan LowPulseWidth { get; private set; }
 	}
+
+    /// <summary>
+    /// Delegate for the PulseWidthChangedEvent.
+    /// </summary>
+    /// <param name="sender">The object where the event handler is attached.</param>
+    /// <param name="e">The event data.</param>
+    public delegate void PulseWidthChangedEventHandler(object sender, PulseWidthChangedEventArgs e);
 }

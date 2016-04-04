@@ -14,21 +14,18 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with SoftPwmSharp.  If not, see http://www.gnu.org/licenses/.
-//
+
 using System;
 using System.Threading.Tasks;
-using Windows.Devices.Gpio;
 
 namespace Windows.Devices.Gpio.SoftPwmSharp
 {
 	public interface ISoftPwm : IDisposable
 	{
 		GpioPin Pin { get; }
-		double MaximumValue { get; set; }
-		double MinimumValue { get; }
 		double PulseFrequency { get; set; }
-		double HighPulseWidth { get; }
-		double LowPulseWidth { get; }
+        TimeSpan HighPulseWidth { get; }
+        TimeSpan LowPulseWidth { get; }
 		double Value { get; set; }
 		void StartAsync();
 		Task StopAsync();

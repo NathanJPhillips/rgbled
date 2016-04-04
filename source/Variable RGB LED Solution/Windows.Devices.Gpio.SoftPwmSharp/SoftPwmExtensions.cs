@@ -72,23 +72,6 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		}
 
 		/// <summary>
-		/// Attaches a handler to the PulseWidthChanged event to watch for
-		/// changes to the HighPulseWidth and LowPulseWidth properties.
-		/// </summary>
-		/// <param name="pwm">The instance of SoftPwm to start.</param>
-		/// <param name="eventHandler">A PulseWidthChangedEventHandler method or lambda expression..</param>
-		/// <returns>The ISoftPwm reference to allow chaining of methods.</returns>
-		public static ISoftPwm WatchPulseWidthChanges(this ISoftPwm pwm, PulseWidthChangedEventHandler eventHandler)
-		{
-			if (pwm is SoftPwm)
-			{
-				((SoftPwm)pwm).PulseWidthChanged += eventHandler;
-			}
-
-			return pwm;
-        }
-
-		/// <summary>
 		/// Attaches a handler to the PwmPulsed event to watch
 		/// for changes in the pulse.
 		/// </summary>

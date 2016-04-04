@@ -107,14 +107,14 @@
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
 						<!-- High Pulse Label -->
-						<TextBlock Text="{x:Bind RedHighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind RedPwm.HighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   Margin="0,0,25,0"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
 
 						<!-- Low Pulse Label -->
-                        <TextBlock Text="{x:Bind RedLowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind RedPwm.LowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
@@ -123,7 +123,6 @@
 					<!-- Value Slider -->
 					<Slider Grid.Row="1"
 							Grid.ColumnSpan="3"
-							Minimum="{x:Bind MinimumValue, Mode=OneTime}"
 							Maximum="{x:Bind MaximumValue, Mode=OneTime}"
 							Value="{x:Bind RedValue, Mode=TwoWay}" />
 				</Grid>
@@ -242,14 +241,14 @@
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
 						<!-- High Pulse Label -->
-						<TextBlock Text="{x:Bind GreenHighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
+						<TextBlock Text="{x:Bind GreenPwm.HighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   Margin="0,0,25,0"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
 
 						<!-- Low Pulse Label -->
-						<TextBlock Text="{x:Bind GreenLowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind GreenPwm.LowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
@@ -258,7 +257,6 @@
 					<!-- Value Slider -->
 					<Slider Grid.Row="1"
 							Grid.ColumnSpan="3"
-							Minimum="{x:Bind MinimumValue, Mode=OneTime}"
 							Maximum="{x:Bind MaximumValue, Mode=OneTime}"
 							Value="{x:Bind GreenValue, Mode=TwoWay}" />
 				</Grid>
@@ -377,14 +375,14 @@
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
 						<!-- High Pulse Label -->
-						<TextBlock Text="{x:Bind BlueHighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind BluePwm.HighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   Margin="0,0,25,0"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
 
 						<!-- Low Pulse Label -->
-                        <TextBlock Text="{x:Bind BlueLowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind BluePwm.LowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
@@ -393,7 +391,6 @@
 					<!-- Value Slider -->
 					<Slider Grid.Row="1"
 							Grid.ColumnSpan="3"
-							Minimum="{x:Bind MinimumValue, Mode=OneTime}"
 							Maximum="{x:Bind MaximumValue, Mode=OneTime}"
 							Value="{x:Bind BlueValue, Mode=TwoWay}" />
 				</Grid>

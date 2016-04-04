@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with Variable RGB LED.  If not, see http://www.gnu.org/licenses/.
-//
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Windows.ApplicationModel;
 using Windows.Devices.Gpio;
 using Windows.Devices.Gpio.FluentApi;
@@ -38,14 +39,8 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Porrey.RgbLed
 {
-	public sealed partial class MainPage : Page, INotifyPropertyChanged
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
 	{
-		/// <summary>
-		/// Part of the INotifyPropertyChanged interface. Bindings use this
-		/// event to monitor for changes.
-		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged = null;
-
 		/// <summary>
 		/// Constants used within the class.
 		/// </summary>
@@ -70,8 +65,6 @@ namespace Porrey.RgbLed
 
 			public static class Limit
 			{
-				public const double MinimumValue = 0d;
-				public const double MaximumValue = 255d;
 				public const double MinimumFrequency = 100d;
 				public const double MaximumFrequency = 2000d;
 			}
@@ -84,24 +77,6 @@ namespace Porrey.RgbLed
 				public const string RedFrequency = "RedFrequency";
 				public const string GreenFrequency = "GreenFrequency";
 				public const string BlueFrequency = "BlueFrequency";
-			}
-
-			public static class ColorName
-			{
-				public const string Red = "Red";
-				public const string Green = "Green";
-				public const string Blue = "Blue";
-			}
-
-			public static class Pulse
-			{
-				public const string Low = "LowPulseWidth";
-				public const string High = "HighPulseWidth";
-			}
-
-			public static class DialogTitle
-			{
-				public const string Exception = "Exception";
 			}
 		}
 
@@ -138,32 +113,23 @@ namespace Porrey.RgbLed
 		{
 			try
 			{
-				// ***
-				// *** Load the crayon colors for the combo box to read 
-				// *** from (via Xaml binding).
-				// ***
-				await this.LoadCrayonColors();
+				// Load the crayon colors for the combo box to read 
+				// from (via Xaml binding).
+				await this.LoadCrayonColorsAsync();
 
-				// ***
-				// *** Check if there is a GPIO Controller
-				// ***
+				// Check if there is a GPIO Controller
 				if (ApiInformation.IsTypePresent(typeof(GpioController).FullName))
 				{
-					// ***
-					// *** Get a reference to the GPIO Controller
-					// ***
+					// Get a reference to the GPIO Controller
 					GpioController gpio = GpioController.GetDefault();
 
-					// ***
-					// *** Setup the three pins on a Soft PWM
-					// ***
+					// Setup the three pins as Soft PWM
 					this.RedPwm = gpio.OnPin(Constants.Pin.Red)
 											.AsExclusive()
 											.Open()
 											.AssignSoftPwm()
 											.WithValue(ApplicationSettings.Get(Constants.Setting.RedValue, Constants.Default.RedValue))
 											.WithPulseFrequency(ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency))
-											.WatchPulseWidthChanges((s, args) => { this.OnFrequencyChanged(Constants.ColorName.Red); })
 											.Start();
 
 					this.GreenPwm = gpio.OnPin(Constants.Pin.Green)
@@ -172,7 +138,6 @@ namespace Porrey.RgbLed
 											.AssignSoftPwm()
 											.WithValue(ApplicationSettings.Get(Constants.Setting.GreenValue, Constants.Default.GreenValue))
 											.WithPulseFrequency(ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency))
-											.WatchPulseWidthChanges((s, args) => { this.OnFrequencyChanged(Constants.ColorName.Green); })
 											.Start();
 
 					this.BluePwm = gpio.OnPin(Constants.Pin.Blue)
@@ -181,40 +146,27 @@ namespace Porrey.RgbLed
 											.AssignSoftPwm()
 											.WithValue(ApplicationSettings.Get(Constants.Setting.BlueValue, Constants.Default.BlueValue))
 											.WithPulseFrequency(ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency))
-											.WatchPulseWidthChanges((s, args) => { this.OnFrequencyChanged(Constants.ColorName.Blue); })
 											.Start();
 
-					// ***
-					// *** Initialize the values
-					// ***
+					// Initialize the values
 					this.RedValue = this.RedPwm.Value;
 					this.GreenValue = this.GreenPwm.Value;
 					this.BlueValue = this.BluePwm.Value;
 
-					// ***
-					// *** Initialize the pulse frequencies
-					// ***
+					// Initialize the pulse frequencies
 					this.RedPulseFrequency = this.RedPwm.PulseFrequency;
 					this.GreenPulseFrequency = this.GreenPwm.PulseFrequency;
 					this.BluePulseFrequency = this.BluePwm.PulseFrequency;
 				}
 				else
 				{
-					// ***
-					// *** Initialize these so the user can interact with the application
-					// *** even though there is no GPIO
-					// ***
+					// Initialize these so the user can interact with the application
+					// even though there is no GPIO
 
-					// ***
-					// *** Initialize the values
-					// ***
 					this.RedValue = ApplicationSettings.Get(Constants.Setting.RedValue, Constants.Default.RedValue);
 					this.GreenValue = ApplicationSettings.Get(Constants.Setting.GreenValue, Constants.Default.GreenValue);
 					this.BlueValue = ApplicationSettings.Get(Constants.Setting.BlueValue, Constants.Default.BlueValue);
 
-					// ***
-					// *** Initialize the values
-					// ***
 					this.RedPulseFrequency = ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency);
 					this.GreenPulseFrequency = ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency);
 					this.BluePulseFrequency = ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency);
@@ -222,7 +174,7 @@ namespace Porrey.RgbLed
 			}
 			catch (Exception ex)
 			{
-				MessageDialog md = new MessageDialog(ex.Message, Constants.DialogTitle.Exception);
+				MessageDialog md = new MessageDialog(ex.Message, strings.ResourceManager.ExceptionDialogTitle);
 			}
 			finally
 			{
@@ -237,16 +189,26 @@ namespace Porrey.RgbLed
 		{
 			try
 			{
-				// ***
-				// *** Stop and Dispose the SoftPwm instances
-				// ***
-				if (this.RedPwm != null) { this.RedPwm.Dispose(); }
-				if (this.GreenPwm != null) { this.GreenPwm.Dispose(); }
-				if (this.BluePwm != null) { this.BluePwm.Dispose(); }
-			}
+                // Stop and Dispose the SoftPwm instances
+                if (this.RedPwm != null)
+                {
+                    this.RedPwm.Dispose();
+                    this.RedPwm = null;
+                }
+                if (this.GreenPwm != null)
+                {
+                    this.GreenPwm.Dispose();
+                    this.GreenPwm = null;
+                }
+                if (this.BluePwm != null)
+                {
+                    this.BluePwm.Dispose();
+                    this.BluePwm = null;
+                }
+            }
 			catch (Exception ex)
 			{
-				MessageDialog md = new MessageDialog(ex.Message, Constants.DialogTitle.Exception);
+				MessageDialog md = new MessageDialog(ex.Message, strings.ResourceManager.ExceptionDialogTitle);
 			}
 			finally
 			{
@@ -272,7 +234,7 @@ namespace Porrey.RgbLed
 			}
 			catch (Exception ex)
 			{
-				MessageDialog md = new MessageDialog(ex.Message, Constants.DialogTitle.Exception);
+				MessageDialog md = new MessageDialog(ex.Message, strings.ResourceManager.ExceptionDialogTitle);
 			}
 		}
 
@@ -288,58 +250,29 @@ namespace Porrey.RgbLed
 		/// Loads the Crayon Colors into an ObservableCollection to be
 		/// loaded into the ComboBox via Xaml binding.
 		/// </summary>
-		private async Task LoadCrayonColors()
+		private async Task LoadCrayonColorsAsync()
 		{
 			try
 			{
-				// ***
-				// *** Get the application installed folder
-				// ***
-				StorageFolder storageFolder = Package.Current.InstalledLocation;
+                this.CrayonColors.Clear();
 
-				// ***
-				// *** Get the json file
-				// ***
-				StorageFile storageFile = await storageFolder.GetFileAsync(@"Data\CrayonColors.json");
-
-				// ***
-				// *** Read the json text
-				// ***
+                StorageFile storageFile = await Package.Current.InstalledLocation
+                    .GetFileAsync(@"Data\CrayonColors.json");
 				string json = await FileIO.ReadTextAsync(storageFile);
-
-				// ***
-				// *** Deserialize the json
-				// ***
-				JArray items = (JArray)JsonConvert.DeserializeObject(json);
-
-				// ***
-				// *** Convert to IEnumerable of CrayColor objects
-				// ***
-				var colors = from tbl in items
-							 select new CrayonColor()
-							 {
-								 Name = tbl["Name"].Value<string>(),
-								 Hex = tbl["Hex"].Value<string>(),
-								 Rgb = tbl["Rgb"].Value<string>()
-							 };
-
-				// ***
-				// *** Clear the collection before loading it.
-				// ***
-				this.CrayonColors.Clear();
-
-				// ***
-				// *** There is no AddRange on ObservableCollection and since
-				// *** there is a binding, let's not create a new one.
-				// ***
-				foreach (var color in colors)
-				{
+				IEnumerable<CrayonColor> colors =
+                    from tbl in (JArray)JsonConvert.DeserializeObject(json)
+                    select new CrayonColor()
+					{
+						Name = tbl["Name"].Value<string>(),
+						Hex = tbl["Hex"].Value<string>(),
+						Rgb = tbl["Rgb"].Value<string>()
+					};
+				foreach (CrayonColor color in colors)
 					this.CrayonColors.Add(color);
-				}
 			}
 			catch (Exception ex)
 			{
-				MessageDialog md = new MessageDialog(ex.Message, Constants.DialogTitle.Exception);
+				MessageDialog md = new MessageDialog(ex.Message, strings.ResourceManager.ExceptionDialogTitle);
 			}
 		}
 
@@ -348,32 +281,19 @@ namespace Porrey.RgbLed
 		/// </summary>
 		private void OnColorChanged()
 		{
-			this.OnPropertyChanged("SelectedColorText");
-			this.OnPropertyChanged("SelectedColor");
-		}
-
-		/// <summary>
-		/// Called to notify bindings that the High and Low frequency values
-		/// have been updated for a specific call.
-		/// </summary>
-		/// <param name="colorName">The name of the color that had values change.</param>
-		private void OnFrequencyChanged(string colorName)
-		{
-			this.OnPropertyChanged(string.Format("{0}{1}", colorName, Constants.Pulse.Low));
-			this.OnPropertyChanged(string.Format("{0}{1}", colorName, Constants.Pulse.High));
+			this.OnPropertyChanged(nameof(SelectedColorText));
+			this.OnPropertyChanged(nameof(SelectedColor));
 		}
 
 		#region Bindings
+
 		/// <summary>
 		/// The ComboBox uses this collection to get it's list from vis Xaml binding
 		/// </summary>
 		private readonly ObservableCollection<CrayonColor> _crayonColors = new ObservableCollection<CrayonColor>();
 		public ObservableCollection<CrayonColor> CrayonColors
 		{
-			get
-			{
-				return _crayonColors;
-			}
+			get { return _crayonColors; }
 		}
 
 		/// <summary>
@@ -383,10 +303,7 @@ namespace Porrey.RgbLed
 		private CrayonColor _selectedCrayonColor = null;
 		public CrayonColor SelectedCrayonColor
 		{
-			get
-			{
-				return _selectedCrayonColor;
-			}
+			get { return _selectedCrayonColor; }
 			set
 			{
 				this.SetProperty(ref _selectedCrayonColor, value);
@@ -417,26 +334,15 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** Create an instance of the color with
-				// *** alpha at 95%
-				// ***
+				// Create an instance of the color with alpha at 95%
 				return Color.FromArgb((byte)(byte.MaxValue * .95),
-									  (byte)this.RedValue,
-									  (byte)this.GreenValue,
-									  (byte)this.BlueValue);
 			}
 		}
 
 		/// <summary>
-		/// Gets the Minimum value used by the value sliders
-		/// </summary>
-		public double MinimumValue { get; } = Constants.Limit.MinimumValue;
-
-		/// <summary>
 		/// Gets the Maximum value used by the value sliders
 		/// </summary>
-		public double MaximumValue { get; } = Constants.Limit.MaximumValue;
+		public double MaximumValue { get; } = 100;
 
 		/// <summary>
 		/// Gets the Minimum frequency used by the pulse sliders
@@ -458,16 +364,16 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** If this is not running on a device with a GPIO then
-				// *** use a local cached value instead of the actual value
-				// *** from the device.
-				// ***			
-				return this.RedPwm == null ? _redValue : this.RedPwm.Value;
+                // If this is not running on a device with a GPIO then
+                // use a local cached value instead of the actual value
+                // from the device.
+                return (this.RedPwm?.Value ?? _redValue) * MaximumValue;
 			}
 			set
 			{
-				if (this.RedPwm != null) { this.RedPwm.Value = value; };
+                value /= MaximumValue;
+				if (this.RedPwm != null)
+                    this.RedPwm.Value = value;
 				ApplicationSettings.Save(Constants.Setting.RedValue, value);
 				this.SetProperty(ref _redValue, value);
 				this.OnColorChanged();
@@ -484,19 +390,17 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** If this is not running on a device with a GPIO then
-				// *** use a local cached value instead of the actual value
-				// *** from the device.
-				// ***			
+				// If this is not running on a device with a GPIO then
+				// use a local cached value instead of the actual value
+				// from the device.
 				return this.RedPwm == null ? _redPulseFrequency : this.RedPwm.PulseFrequency;
 			}
 			set
 			{
-				if (this.RedPwm != null) { this.RedPwm.PulseFrequency = value; };
+				if (this.RedPwm != null)
+                    this.RedPwm.PulseFrequency = value;
 				ApplicationSettings.Save(Constants.Setting.RedFrequency, value);
 				this.SetProperty(ref _redPulseFrequency, value);
-				this.OnFrequencyChanged(Constants.ColorName.Red);
 			}
 		}
 
@@ -510,16 +414,16 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** If this is not running on a device with a GPIO then
-				// *** use a local cached value instead of the actual value
-				// *** from the device.
-				// ***			
-				return this.GreenPwm == null ? _greenValue : this.GreenPwm.Value;
+                // If this is not running on a device with a GPIO then
+                // use a local cached value instead of the actual value
+                // from the device.
+                return (this.GreenPwm?.Value ?? _greenValue) * MaximumValue;
 			}
 			set
 			{
-				if (this.GreenPwm != null) { this.GreenPwm.Value = value; };
+                value /= MaximumValue;
+                if (this.GreenPwm != null)
+                    this.GreenPwm.Value = value;
 				ApplicationSettings.Save(Constants.Setting.GreenValue, value);
 				this.SetProperty(ref _greenValue, value);
 				this.OnColorChanged();
@@ -536,19 +440,17 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** If this is not running on a device with a GPIO then
-				// *** use a local cached value instead of the actual value
-				// *** from the device.
-				// ***			
+				// If this is not running on a device with a GPIO then
+				// use a local cached value instead of the actual value
+				// from the device.
 				return this.GreenPwm == null ? _greenPulseFrequency : this.GreenPwm.PulseFrequency;
 			}
 			set
 			{
-				if (this.GreenPwm != null) { this.GreenPwm.PulseFrequency = value; };
+				if (this.GreenPwm != null)
+                    this.GreenPwm.PulseFrequency = value;
 				ApplicationSettings.Save(Constants.Setting.GreenFrequency, value);
 				this.SetProperty(ref _greenPulseFrequency, value);
-				this.OnFrequencyChanged(Constants.ColorName.Green);
 			}
 		}
 
@@ -562,16 +464,16 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** If this is not running on a device with a GPIO then
-				// *** use a local cached value instead of the actual value
-				// *** from the device.
-				// ***			
-				return this.BluePwm == null ? _blueValue : this.BluePwm.Value;
+                // If this is not running on a device with a GPIO then
+                // use a local cached value instead of the actual value
+                // from the device.
+                return (this.BluePwm?.Value ?? _blueValue) * MaximumValue;
 			}
 			set
 			{
-				if (this.BluePwm != null) { this.BluePwm.Value = value; };
+                value /= MaximumValue;
+                if (this.BluePwm != null)
+                    this.BluePwm.Value = value;
 				ApplicationSettings.Save(Constants.Setting.BlueValue, value);
 				this.SetProperty(ref _blueValue, value);
 				this.OnColorChanged();
@@ -588,87 +490,20 @@ namespace Porrey.RgbLed
 		{
 			get
 			{
-				// ***
-				// *** If this is not running on a device with a GPIO then
-				// *** use a local cached value instead of the actual value
-				// *** from the device.
-				// ***			
+				// If this is not running on a device with a GPIO then
+				// use a local cached value instead of the actual value
+				// from the device.
 				return this.BluePwm == null ? _bluePulseFrequency : this.BluePwm.PulseFrequency;
 			}
 			set
 			{
-				if (this.BluePwm != null) { this.BluePwm.PulseFrequency = value; };
+				if (this.BluePwm != null)
+                    this.BluePwm.PulseFrequency = value;
 				ApplicationSettings.Save(Constants.Setting.BlueFrequency, value);
 				this.SetProperty(ref _bluePulseFrequency, value);
-				this.OnFrequencyChanged(Constants.ColorName.Blue);
 			}
 		}
 
-		/// <summary>
-		/// Gets low pulse width in microseconds for the currently selected red color.
-		/// </summary>
-		public double RedLowPulseWidth
-		{
-			get
-			{
-				return this.RedPwm != null ? this.RedPwm.LowPulseWidth : 0d;
-			}
-		}
-
-		/// <summary>
-		/// Gets high pulse width in microseconds for the currently selected red color.
-		/// </summary>
-		public double RedHighPulseWidth
-		{
-			get
-			{
-				return this.RedPwm != null ? this.RedPwm.HighPulseWidth : 0d;
-			}
-		}
-
-		/// <summary>
-		/// Gets low pulse width in microseconds for the currently selected green color.
-		/// </summary>
-		public double GreenLowPulseWidth
-		{
-			get
-			{
-				return this.GreenPwm != null ? this.GreenPwm.LowPulseWidth : 0d;
-			}
-		}
-
-		/// <summary>
-		/// Gets high pulse width in microseconds for the currently selected green color.
-		/// </summary>
-		public double GreenHighPulseWidth
-		{
-			get
-			{
-				return this.GreenPwm != null ? this.GreenPwm.HighPulseWidth : 0d;
-			}
-		}
-
-		/// <summary>
-		/// Gets low pulse width in microseconds for the currently selected blue color.
-		/// </summary>
-		public double BlueLowPulseWidth
-		{
-			get
-			{
-				return this.BluePwm != null ? this.BluePwm.LowPulseWidth : 0d;
-			}
-		}
-
-		/// <summary>
-		/// Gets high pulse width in microseconds for the currently selected blue color.
-		/// </summary>
-		public double BlueHighPulseWidth
-		{
-			get
-			{
-				return this.BluePwm != null ? this.BluePwm.HighPulseWidth : 0d;
-			}
-		}
 		#endregion
 
 		#region For INotifyPropertyChanged
@@ -684,15 +519,12 @@ namespace Porrey.RgbLed
 		/// support CallerMemberName.</param>
 		/// <returns>True if the value was changed, false if the existing value matched the
 		/// desired value.</returns>
-		private bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+		private void SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
 		{
-			if (value != null && value.Equals(storage)) return false;
-			if (object.Equals(storage, value)) return false;
-
+			if (object.Equals(storage, value))
+                return;
 			storage = value;
 			this.OnPropertyChanged(propertyName);
-
-			return true;
 		}
 
 		/// <summary>
@@ -701,18 +533,27 @@ namespace Porrey.RgbLed
 		/// <param name="propertyName">Name of the property used to notify listeners. This
 		/// value is optional and can be provided automatically when invoked from compilers
 		/// that support <see cref="CallerMemberNameAttribute"/>.</param>
-		private async void OnPropertyChanged(string propertyName)
+		protected void OnPropertyChanged(string propertyName)
 		{
 			var eventHandler = this.PropertyChanged;
 
 			if (eventHandler != null)
 			{
-				await this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					eventHandler(this, new PropertyChangedEventArgs(propertyName));
-				});
+				var _ = this.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
+                    () =>
+				    {
+					    eventHandler(this, new PropertyChangedEventArgs(propertyName));
+				    });
 			}
 		}
-		#endregion
-	}
+
+        /// <summary>
+        /// Part of the INotifyPropertyChanged interface. Bindings use this
+        /// event to monitor for changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = null;
+
+        #endregion
+    }
 }
