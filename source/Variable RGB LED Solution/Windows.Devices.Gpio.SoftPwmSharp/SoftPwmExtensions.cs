@@ -14,7 +14,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with SoftPwmSharp.  If not, see http://www.gnu.org/licenses/.
-//
+
 using System;
 
 namespace Windows.Devices.Gpio.SoftPwmSharp
@@ -53,7 +53,7 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		/// <param name="pwm">The instance of SoftPwm to start.</param>
 		/// <param name="value">The value to set the SoftPwm instance to.</param>
 		/// <returns></returns>
-		public static ISoftPwm WithValue(this ISoftPwm pwm, double value)
+		public static ISoftPwm SetValue(this ISoftPwm pwm, double value)
 		{
 			pwm.Value = value;
 			return pwm;
@@ -65,26 +65,9 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		/// <param name="pwm">The instance of SoftPwm to start.</param>
 		/// <param name="pulseFrequency">The pulse frequency to use given in Hz.</param>
 		/// <returns></returns>
-		public static ISoftPwm WithPulseFrequency(this ISoftPwm pwm, double pulseFrequency)
+		public static ISoftPwm SetPulseFrequency(this ISoftPwm pwm, double pulseFrequency)
 		{
 			pwm.PulseFrequency = pulseFrequency;
-			return pwm;
-		}
-
-		/// <summary>
-		/// Attaches a handler to the PwmPulsed event to watch
-		/// for changes in the pulse.
-		/// </summary>
-		/// <param name="pwm">The instance of SoftPwm to start.</param>
-		/// <param name="eventHandler">A EventHandler method or lambda expression.</param>
-		/// <returns>The ISoftPwm reference to allow chaining of methods.</returns>
-		public static ISoftPwm WatchPulse(this ISoftPwm pwm, EventHandler eventHandler)
-		{
-			if (pwm is SoftPwm)
-			{
-				((SoftPwm)pwm).PwmPulsed += eventHandler;
-			}
-
 			return pwm;
 		}
 	}
