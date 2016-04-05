@@ -24,6 +24,7 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 	{
 		GpioPin Pin { get; }
 		double PulseFrequency { get; set; }
+        TimeSpan PulseWidth { get; }
         TimeSpan HighPulseWidth { get; }
         TimeSpan LowPulseWidth { get; }
 		double Value { get; set; }

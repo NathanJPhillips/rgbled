@@ -103,7 +103,7 @@ namespace Porrey.RgbLed
 		/// </summary>
 		public MainPage()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 		}
 
 		/// <summary>
@@ -115,62 +115,33 @@ namespace Porrey.RgbLed
 			{
 				// Load the crayon colors for the combo box to read 
 				// from (via Xaml binding).
-				await this.LoadCrayonColorsAsync();
+				await LoadCrayonColorsAsync();
 
-				// Check if there is a GPIO Controller
-				if (ApiInformation.IsTypePresent(typeof(GpioController).FullName))
+                // Get a reference to the GPIO Controller
+                GpioController gpio = GpioController.GetDefault();
+                if (gpio != null)
 				{
-					// Get a reference to the GPIO Controller
-					GpioController gpio = GpioController.GetDefault();
-
 					// Setup the three pins as Soft PWM
-					this.RedPwm = gpio.OnPin(Constants.Pin.Red)
-											.AsExclusive()
-											.Open()
-											.AssignSoftPwm()
-											.WithValue(ApplicationSettings.Get(Constants.Setting.RedValue, Constants.Default.RedValue))
-											.WithPulseFrequency(ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency))
-											.Start();
-
-					this.GreenPwm = gpio.OnPin(Constants.Pin.Green)
-											.AsExclusive()
-											.Open()
-											.AssignSoftPwm()
-											.WithValue(ApplicationSettings.Get(Constants.Setting.GreenValue, Constants.Default.GreenValue))
-											.WithPulseFrequency(ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency))
-											.Start();
-
-					this.BluePwm = gpio.OnPin(Constants.Pin.Blue)
-											.AsExclusive()
-											.Open()
-											.AssignSoftPwm()
-											.WithValue(ApplicationSettings.Get(Constants.Setting.BlueValue, Constants.Default.BlueValue))
-											.WithPulseFrequency(ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency))
-											.Start();
-
-					// Initialize the values
-					this.RedValue = this.RedPwm.Value;
-					this.GreenValue = this.GreenPwm.Value;
-					this.BlueValue = this.BluePwm.Value;
-
-					// Initialize the pulse frequencies
-					this.RedPulseFrequency = this.RedPwm.PulseFrequency;
-					this.GreenPulseFrequency = this.GreenPwm.PulseFrequency;
-					this.BluePulseFrequency = this.BluePwm.PulseFrequency;
+					RedPwm = gpio.OnPin(Constants.Pin.Red)
+                        .AsExclusive().Open().AssignSoftPwm().Start();
+                    GreenPwm = gpio.OnPin(Constants.Pin.Green)
+                        .AsExclusive().Open().AssignSoftPwm().Start();
+                    BluePwm = gpio.OnPin(Constants.Pin.Blue)
+                        .AsExclusive().Open().AssignSoftPwm().Start();
 				}
-				else
-				{
-					// Initialize these so the user can interact with the application
-					// even though there is no GPIO
 
-					this.RedValue = ApplicationSettings.Get(Constants.Setting.RedValue, Constants.Default.RedValue);
-					this.GreenValue = ApplicationSettings.Get(Constants.Setting.GreenValue, Constants.Default.GreenValue);
-					this.BlueValue = ApplicationSettings.Get(Constants.Setting.BlueValue, Constants.Default.BlueValue);
+                // Initialize these so the user can interact with the application
+                // whether or not there are GPIO pins
 
-					this.RedPulseFrequency = ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency);
-					this.GreenPulseFrequency = ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency);
-					this.BluePulseFrequency = ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency);
-				}
+                // Initialize the values
+                RedValue = ApplicationSettings.Get(Constants.Setting.RedValue, Constants.Default.RedValue);
+				GreenValue = ApplicationSettings.Get(Constants.Setting.GreenValue, Constants.Default.GreenValue);
+				BlueValue = ApplicationSettings.Get(Constants.Setting.BlueValue, Constants.Default.BlueValue);
+
+                // Initialize the pulse frequencies
+                RedPulseFrequency = ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency);
+				GreenPulseFrequency = ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency);
+				BluePulseFrequency = ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency);
 			}
 			catch (Exception ex)
 			{
@@ -308,9 +279,9 @@ namespace Porrey.RgbLed
 			{
 				this.SetProperty(ref _selectedCrayonColor, value);
 
-				this.RedValue = _selectedCrayonColor.R;
-				this.GreenValue = _selectedCrayonColor.G;
-				this.BlueValue = _selectedCrayonColor.B;
+				this.RedValue = _selectedCrayonColor.R * MaximumValue / byte.MaxValue;
+				this.GreenValue = _selectedCrayonColor.G * MaximumValue / byte.MaxValue;
+				this.BlueValue = _selectedCrayonColor.B * MaximumValue / byte.MaxValue;
 
 				this.OnColorChanged();
 			}
@@ -336,9 +307,9 @@ namespace Porrey.RgbLed
 			{
 				// Create an instance of the color with alpha at 95%
 				return Color.FromArgb((byte)(byte.MaxValue * .95),
-                    (byte)(byte.MaxValue * _redValue),
-                    (byte)(byte.MaxValue * _greenValue),
-                    (byte)(byte.MaxValue * _blueValue));
+                    (byte)(byte.MaxValue * RedValue / MaximumValue),
+                    (byte)(byte.MaxValue * GreenValue / MaximumValue),
+                    (byte)(byte.MaxValue * BlueValue / MaximumValue));
             }
         }
 
@@ -370,13 +341,12 @@ namespace Porrey.RgbLed
                 // If this is not running on a device with a GPIO then
                 // use a local cached value instead of the actual value
                 // from the device.
-                return (this.RedPwm?.Value ?? _redValue) * MaximumValue;
+                return this.RedPwm?.Value * MaximumValue ?? _redValue;
 			}
 			set
 			{
-                value /= MaximumValue;
 				if (this.RedPwm != null)
-                    this.RedPwm.Value = value;
+                    this.RedPwm.Value = value / MaximumValue;
 				ApplicationSettings.Save(Constants.Setting.RedValue, value);
 				this.SetProperty(ref _redValue, value);
 				this.OnColorChanged();
@@ -420,13 +390,12 @@ namespace Porrey.RgbLed
                 // If this is not running on a device with a GPIO then
                 // use a local cached value instead of the actual value
                 // from the device.
-                return (this.GreenPwm?.Value ?? _greenValue) * MaximumValue;
+                return this.GreenPwm?.Value * MaximumValue ?? _greenValue;
 			}
 			set
 			{
-                value /= MaximumValue;
                 if (this.GreenPwm != null)
-                    this.GreenPwm.Value = value;
+                    this.GreenPwm.Value = value / MaximumValue;
 				ApplicationSettings.Save(Constants.Setting.GreenValue, value);
 				this.SetProperty(ref _greenValue, value);
 				this.OnColorChanged();
@@ -470,13 +439,12 @@ namespace Porrey.RgbLed
                 // If this is not running on a device with a GPIO then
                 // use a local cached value instead of the actual value
                 // from the device.
-                return (this.BluePwm?.Value ?? _blueValue) * MaximumValue;
+                return this.BluePwm?.Value * MaximumValue ?? _blueValue;
 			}
 			set
 			{
-                value /= MaximumValue;
                 if (this.BluePwm != null)
-                    this.BluePwm.Value = value;
+                    this.BluePwm.Value = value / MaximumValue;
 				ApplicationSettings.Save(Constants.Setting.BlueValue, value);
 				this.SetProperty(ref _blueValue, value);
 				this.OnColorChanged();
@@ -538,15 +506,15 @@ namespace Porrey.RgbLed
 		/// that support <see cref="CallerMemberNameAttribute"/>.</param>
 		private void OnPropertyChanged(string propertyName)
 		{
-			var eventHandler = this.PropertyChanged;
+			var propertyChanged = PropertyChanged;
 
-			if (eventHandler != null)
+			if (propertyChanged != null)
 			{
-				var _ = this.Dispatcher.RunAsync(
+				var _ = Dispatcher.RunAsync(
                     CoreDispatcherPriority.Normal,
                     () =>
 				    {
-					    eventHandler(this, new PropertyChangedEventArgs(propertyName));
+					    propertyChanged(this, new PropertyChangedEventArgs(propertyName));
 				    });
 			}
 		}

@@ -20,16 +20,16 @@ using Windows.UI.Xaml.Data;
 
 namespace Porrey.RgbLed.Converters
 {
-	public class ValueFormatConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, string language)
-		{
-            return string.Format((string)parameter, value);
-		}
+    public class MicroSecondFormatConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return string.Format((string)parameter ?? "({0:#,##0.0} μs)", ((TimeSpan)value).TotalSeconds * 1000000);
+        }
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
-		{
-			throw new NotSupportedException();
-		}
-	}
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

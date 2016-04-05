@@ -101,7 +101,7 @@
     </Compile>
     <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Converters\CrayonColorToObjectConverter.cs" />
-    <Compile Include="Converters\FrequencyToTimeConverter.cs" />
+    <Compile Include="Converters\MicroSecondFormatConverter.cs" />
     <Compile Include="Converters\ValueFormatConverter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MainPage.xaml.cs">

@@ -95,7 +95,7 @@
 					<!-- Value Label -->
 					<TextBlock Grid.Row="0"
 							   Grid.Column="0"
-							   Text="{x:Bind RedValue, Mode=OneWay}"
+							   Text="{x:Bind RedValue, Converter={StaticResource ValueFormatConverter}, ConverterParameter='{}{0:#,##0}', Mode=OneWay}"
 							   Style="{ThemeResource TitleTextBlockStyle}"
 							   HorizontalAlignment="Left"
 							   VerticalAlignment="Center"
@@ -107,14 +107,14 @@
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
 						<!-- High Pulse Label -->
-                        <TextBlock Text="{x:Bind RedPwm.HighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind RedPwm.HighPulseWidth, Converter={StaticResource MicroSecondFormatConverter}, ConverterParameter='{}High = {0:#,##0.0} μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   Margin="0,0,25,0"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
 
 						<!-- Low Pulse Label -->
-                        <TextBlock Text="{x:Bind RedPwm.LowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind RedPwm.LowPulseWidth, Converter={StaticResource MicroSecondFormatConverter}, ConverterParameter='{}Low = {0:#,##0.0} μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
@@ -150,7 +150,7 @@
 					<!-- Pulse Frequency -->
 					<TextBlock Grid.Column="0"
 							   Grid.Row="0"
-							   Text="{x:Bind RedPulseFrequency, Converter={StaticResource ValueFormatConverter}, ConverterParameter='[0:#,##0 Hz]', Mode=OneWay}"
+							   Text="{x:Bind RedPulseFrequency, Converter={StaticResource ValueFormatConverter}, ConverterParameter='{}{0:#,##0 Hz}', Mode=OneWay}"
 							   Style="{ThemeResource TitleTextBlockStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Left" />
@@ -158,7 +158,7 @@
 					<!-- Pulse Width -->
 					<TextBlock Grid.Column="1"
 							   Grid.Row="0"
-							   Text="{x:Bind RedPulseFrequency, Converter={StaticResource FrequencyToTimeConverter}, Mode=OneWay}"
+							   Text="{x:Bind RedPwm.PulseWidth, Converter={StaticResource MicroSecondFormatConverter}, Mode=OneWay}"
 							   Style="{ThemeResource BodyTextBlockStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Right" />
@@ -229,7 +229,7 @@
 					<!-- Value Label -->
 					<TextBlock Grid.Row="0"
 							   Grid.Column="0"
-							   Text="{x:Bind GreenValue, Mode=OneWay}"
+							   Text="{x:Bind GreenValue, Converter={StaticResource ValueFormatConverter}, ConverterParameter='{}{0:#,##0}', Mode=OneWay}"
 							   Style="{ThemeResource TitleTextBlockStyle}"
 							   HorizontalAlignment="Left"
 							   VerticalAlignment="Center"
@@ -241,14 +241,14 @@
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
 						<!-- High Pulse Label -->
-						<TextBlock Text="{x:Bind GreenPwm.HighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind GreenPwm.HighPulseWidth, Converter={StaticResource MicroSecondFormatConverter}, ConverterParameter='{}High = {0:#,##0.0} μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   Margin="0,0,25,0"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
 
 						<!-- Low Pulse Label -->
-                        <TextBlock Text="{x:Bind GreenPwm.LowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind GreenPwm.LowPulseWidth, Converter={StaticResource MicroSecondFormatConverter}, ConverterParameter='{}Low = {0:#,##0.0} μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
@@ -284,7 +284,7 @@
 					<!-- Pulse Frequency -->
 					<TextBlock Grid.Column="0"
 							   Grid.Row="0"
-							   Text="{x:Bind GreenPulseFrequency, Converter={StaticResource ValueFormatConverter}, ConverterParameter='[0:#,##0 Hz]', Mode=OneWay}"
+							   Text="{x:Bind GreenPulseFrequency, Converter={StaticResource ValueFormatConverter}, ConverterParameter='{}{0:#,##0 Hz}', Mode=OneWay}"
 							   Style="{ThemeResource TitleTextBlockStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Left" />
@@ -292,7 +292,7 @@
 					<!-- Pulse Width -->
 					<TextBlock Grid.Column="1"
 							   Grid.Row="0"
-							   Text="{x:Bind GreenPulseFrequency, Converter={StaticResource FrequencyToTimeConverter}, Mode=OneWay}"
+							   Text="{x:Bind GreenPwm.PulseWidth, Converter={StaticResource MicroSecondFormatConverter}, Mode=OneWay}"
 							   Style="{ThemeResource BodyTextBlockStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Right" />
@@ -363,7 +363,7 @@
 					<!-- Value Label -->
 					<TextBlock Grid.Row="0"
 							   Grid.Column="0"
-							   Text="{x:Bind BlueValue, Mode=OneWay}"
+							   Text="{x:Bind BlueValue, Converter={StaticResource ValueFormatConverter}, ConverterParameter='{}{0:#,##0}', Mode=OneWay}"
 							   Style="{ThemeResource TitleTextBlockStyle}"
 							   HorizontalAlignment="Left"
 							   VerticalAlignment="Center"
@@ -375,14 +375,14 @@
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
 						<!-- High Pulse Label -->
-                        <TextBlock Text="{x:Bind BluePwm.HighPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='High = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind BluePwm.HighPulseWidth, Converter={StaticResource MicroSecondFormatConverter}, ConverterParameter='{}High = {0:#,##0.0} μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   Margin="0,0,25,0"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
 
 						<!-- Low Pulse Label -->
-                        <TextBlock Text="{x:Bind BluePwm.LowPulseWidth, Converter={StaticResource ValueFormatConverter}, ConverterParameter='Low = [0:#,##0.0] μs', Mode=OneWay}"
+                        <TextBlock Text="{x:Bind BluePwm.LowPulseWidth, Converter={StaticResource MicroSecondFormatConverter}, ConverterParameter='{}Low = {0:#,##0.0} μs', Mode=OneWay}"
 								   Style="{ThemeResource BodyTextBlockStyle}"
 								   HorizontalAlignment="Right"
 								   VerticalAlignment="Center" />
@@ -418,7 +418,7 @@
 					<!-- Pulse Frequency -->
 					<TextBlock Grid.Column="0"
 							   Grid.Row="0"
-							   Text="{x:Bind BluePulseFrequency, Converter={StaticResource ValueFormatConverter}, ConverterParameter='[0:#,##0 Hz]', Mode=OneWay}"
+							   Text="{x:Bind BluePulseFrequency, Converter={StaticResource ValueFormatConverter}, ConverterParameter='{}{0:#,##0 Hz}', Mode=OneWay}"
 							   Style="{ThemeResource TitleTextBlockStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Left" />
@@ -426,7 +426,7 @@
 					<!-- Pulse Width -->
 					<TextBlock Grid.Column="1"
 							   Grid.Row="0"
-							   Text="{x:Bind BluePulseFrequency, Converter={StaticResource FrequencyToTimeConverter}, Mode=OneWay}"
+							   Text="{x:Bind BluePwm.PulseWidth, Converter={StaticResource MicroSecondFormatConverter}, Mode=OneWay}"
 							   Style="{ThemeResource BodyTextBlockStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Right" />

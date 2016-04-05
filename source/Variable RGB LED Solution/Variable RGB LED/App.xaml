@@ -8,12 +8,9 @@
 		<ResourceDictionary>
 			<x:String x:Key="AppName">Variable RGB LED</x:String>
 
-			<!-- ***            -->
-			<!-- *** Converters -->
-			<!-- ***            -->
-			<common:ValueFormatConverter x:Key="ValueFormatConverter"></common:ValueFormatConverter>
-			<common:FrequencyToTimeConverter x:Key="FrequencyToTimeConverter"></common:FrequencyToTimeConverter>
-			<common:CrayonColorToObjectConverter x:Key="CrayonColorToObjectConverter"></common:CrayonColorToObjectConverter>
-		</ResourceDictionary>
+            <common:ValueFormatConverter x:Key="ValueFormatConverter" />
+            <common:MicroSecondFormatConverter x:Key="MicroSecondFormatConverter" />
+            <common:CrayonColorToObjectConverter x:Key="CrayonColorToObjectConverter" />
+        </ResourceDictionary>
 	</Application.Resources>
 </Application>
