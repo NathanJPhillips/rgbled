@@ -14,7 +14,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with Variable RGB LED.  If not, see http://www.gnu.org/licenses/.
-//
+
 namespace Windows.Devices.Gpio.FluentApi
 {
 	/// <summary>
@@ -27,17 +27,17 @@ namespace Windows.Devices.Gpio.FluentApi
 		/// <summary>
 		/// Gets/sets a reference to the GPIO controller
 		/// </summary>
-		GpioController Gpio { get; set; }
+		GpioController Gpio { get; }
 
 		/// <summary>
 		/// Gets/sets the pin number on the GPIO
 		/// controller to be initialized.
 		/// </summary>
-		int PinNumber { get; set; }
+		int PinNumber { get; }
 
 		/// <summary>
 		/// Get/sets the sharing mode to be used on the pin.
 		/// </summary>
-		GpioSharingMode SharingMode { get; set; }
+		GpioSharingMode SharingMode { get; }
 	}
 }

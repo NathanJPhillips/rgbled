@@ -14,14 +14,14 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with Variable RGB LED.  If not, see http://www.gnu.org/licenses/.
-//
+
 namespace Windows.Devices.Gpio.FluentApi
 {
 	/// <summary>
 	/// Concrete internal implementation of IGpioPinConfiguration
 	/// used by the fluent API.
 	/// </summary>
-	internal class GpioPinConfiguration: IGpioPinConfiguration
+	internal class GpioPinConfiguration : IGpioPinConfiguration
 	{
 		/// <summary>
 		/// Gets/sets a reference to the GPIO controller

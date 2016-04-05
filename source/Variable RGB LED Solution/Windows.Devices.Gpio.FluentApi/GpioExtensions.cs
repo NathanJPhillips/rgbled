@@ -14,7 +14,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with Variable RGB LED.  If not, see http://www.gnu.org/licenses/.
-//
+
 namespace Windows.Devices.Gpio.FluentApi
 {
 	/// <summary>
@@ -32,12 +32,13 @@ namespace Windows.Devices.Gpio.FluentApi
 		/// used to open the pin on the controller.</returns>
 		public static IGpioPinConfiguration OnPin(this GpioController gpio, int pinNumber)
 		{
-			return new GpioPinConfiguration()
-			{
-				Gpio = gpio,
-				PinNumber = pinNumber,
-				SharingMode = GpioSharingMode.SharedReadOnly
-			};
+			return
+                new GpioPinConfiguration
+			    {
+				    Gpio = gpio,
+				    PinNumber = pinNumber,
+				    SharingMode = GpioSharingMode.SharedReadOnly
+			    };
         }
 
 		/// <summary>
@@ -49,8 +50,13 @@ namespace Windows.Devices.Gpio.FluentApi
 		/// used to open the pin on the controller.</returns>
 		public static IGpioPinConfiguration AsExclusive(this IGpioPinConfiguration configuration)
 		{
-			configuration.SharingMode = GpioSharingMode.Exclusive;
-            return configuration;
+            return
+                new GpioPinConfiguration
+                {
+                    Gpio = configuration.Gpio,
+                    PinNumber = configuration.PinNumber,
+                    SharingMode = GpioSharingMode.Exclusive
+                };
         }
 
 		/// <summary>
@@ -62,18 +68,23 @@ namespace Windows.Devices.Gpio.FluentApi
 		/// used to open the pin on the controller.</returns>
 		public static IGpioPinConfiguration AsSharedReadOnly(this IGpioPinConfiguration configuration)
 		{
-			configuration.SharingMode = GpioSharingMode.SharedReadOnly;
-			return configuration;
-		}
+            return
+                new GpioPinConfiguration
+                {
+                    Gpio = configuration.Gpio,
+                    PinNumber = configuration.PinNumber,
+                    SharingMode = GpioSharingMode.SharedReadOnly
+                };
+        }
 
-		/// <summary>
-		/// Opens the pin on the controller using the configuration provided.
-		/// </summary>
-		/// <param name="configuration">An instance of Windows.Devices.Gpio.IGpioPinConfiguration
-		/// containing the current configuration used top open the pin on the controller.</param>
-		/// <returns>Returns an instance of Windows.Devices.Gpio.GpioPin if it is successfully
-		/// opened.</returns>
-		public static GpioPin Open(this IGpioPinConfiguration configuration)
+        /// <summary>
+        /// Opens the pin on the controller using the configuration provided.
+        /// </summary>
+        /// <param name="configuration">An instance of Windows.Devices.Gpio.IGpioPinConfiguration
+        /// containing the current configuration used top open the pin on the controller.</param>
+        /// <returns>Returns an instance of Windows.Devices.Gpio.GpioPin if it is successfully
+        /// opened.</returns>
+        public static GpioPin Open(this IGpioPinConfiguration configuration)
 		{
 			return configuration.Gpio.OpenPin(configuration.PinNumber, configuration.SharingMode);
 		}
