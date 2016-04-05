@@ -48,12 +48,12 @@ namespace Porrey.RgbLed
 		{
 			public static class Pin
 			{
-				public const int Red = 6;
-				public const int Green = 5;
-				public const int Blue = 22;
-			}
+                public const int Red = 6;
+                public const int Green = 5;
+                public const int Blue = 22;
+            }
 
-			public static class Default
+            public static class Default
 			{
 				public const double RedValue = 0d;
 				public const double GreenValue = 0d;
@@ -123,26 +123,33 @@ namespace Porrey.RgbLed
 				{
 					// Setup the three pins as Soft PWM
 					RedPwm = gpio.OnPin(Constants.Pin.Red)
-                        .AsExclusive().Open().AssignSoftPwm().Start();
+                        .AsExclusive().Open().AssignSoftPwm();
                     GreenPwm = gpio.OnPin(Constants.Pin.Green)
-                        .AsExclusive().Open().AssignSoftPwm().Start();
+                        .AsExclusive().Open().AssignSoftPwm();
                     BluePwm = gpio.OnPin(Constants.Pin.Blue)
-                        .AsExclusive().Open().AssignSoftPwm().Start();
+                        .AsExclusive().Open().AssignSoftPwm();
 				}
 
                 // Initialize these so the user can interact with the application
                 // whether or not there are GPIO pins
+
+                // Initialize the pulse frequencies
+                RedPulseFrequency = ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency);
+				GreenPulseFrequency = ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency);
+				BluePulseFrequency = ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency);
 
                 // Initialize the values
                 RedValue = ApplicationSettings.Get(Constants.Setting.RedValue, Constants.Default.RedValue);
 				GreenValue = ApplicationSettings.Get(Constants.Setting.GreenValue, Constants.Default.GreenValue);
 				BlueValue = ApplicationSettings.Get(Constants.Setting.BlueValue, Constants.Default.BlueValue);
 
-                // Initialize the pulse frequencies
-                RedPulseFrequency = ApplicationSettings.Get(Constants.Setting.RedFrequency, Constants.Default.RedFrequency);
-				GreenPulseFrequency = ApplicationSettings.Get(Constants.Setting.GreenFrequency, Constants.Default.GreenFrequency);
-				BluePulseFrequency = ApplicationSettings.Get(Constants.Setting.BlueFrequency, Constants.Default.BlueFrequency);
-			}
+                if (gpio != null)
+                {
+                    RedPwm.Start();
+                    GreenPwm.Start();
+                    BluePwm.Start();
+                }
+            }
 			catch (Exception ex)
 			{
 				MessageDialog md = new MessageDialog(ex.Message, strings.ResourceManager.ExceptionDialogTitle);

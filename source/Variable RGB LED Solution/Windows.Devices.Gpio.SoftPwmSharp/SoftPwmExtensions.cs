@@ -37,17 +37,6 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		}
 
 		/// <summary>
-		/// Starts the given SoftPwm instance.
-		/// </summary>
-		/// <param name="pwm">The instance of SoftPwm to start.</param>
-		/// <returns></returns>
-		public static ISoftPwm Start(this ISoftPwm pwm)
-		{
-			pwm.StartAsync();
-			return pwm;
-		}
-
-		/// <summary>
 		/// Sets the value of a SoftPwm instance with the given value.
 		/// </summary>
 		/// <param name="pwm">The instance of SoftPwm to start.</param>

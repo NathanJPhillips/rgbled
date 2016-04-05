@@ -29,7 +29,7 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
         TimeSpan HighPulseWidth { get; }
         TimeSpan LowPulseWidth { get; }
 		double Value { get; set; }
-		void StartAsync();
+		void Start();
 		Task StopAsync();
     }
 }

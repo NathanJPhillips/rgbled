@@ -22,12 +22,12 @@ using System.Threading.Tasks;
 
 namespace Windows.Devices.Gpio.SoftPwmSharp
 {
-	/// <summary>
-	/// Provides a software based Pulse Width Modulation capability for any GPIO pin on
-	/// the device. PWM is used in a variety of circuits as a way to control analog 
-	/// circuits through digital interfaces.
-	/// </summary>
-	public class SoftPwm : ISoftPwm
+    /// <summary>
+    /// Provides a software based Pulse Width Modulation capability for any GPIO pin on
+    /// the device. PWM is used in a variety of circuits as a way to control analog 
+    /// circuits through digital interfaces.
+    /// </summary>
+    public class SoftPwm : ISoftPwm
     {
 		/// <summary>
 		/// This event is fired for every pulse (after the low pulse). Monitoring of this event
@@ -130,7 +130,7 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 		/// <summary>
 		/// Start the SoftPwm in the GPIO pin.
 		/// </summary>
-		public void StartAsync()
+		public void Start()
 		{
 			this.ThrowIfDisposed();
 
