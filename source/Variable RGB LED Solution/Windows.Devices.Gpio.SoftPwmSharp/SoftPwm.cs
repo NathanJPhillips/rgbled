@@ -27,7 +27,7 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 	/// the device. PWM is used in a variety of circuits as a way to control analog 
 	/// circuits through digital interfaces.
 	/// </summary>
-	public class SoftPwm : ISoftPwm, INotifyPropertyChanged
+	public class SoftPwm : ISoftPwm
     {
 		/// <summary>
 		/// This event is fired for every pulse (after the low pulse). Monitoring of this event
@@ -52,6 +52,8 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
 			this.Pin = pin;
 			this.Pin.SetDriveMode(GpioPinDriveMode.Output);
 			this.Pin.Write(GpioPinValue.Low);
+
+            PulseFrequency = 100;
 		}
 
 		/// <summary>
@@ -71,6 +73,8 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
             {
                 if (value == this._pulseFrequency)
                     return;
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "PulseFrequence must be positive");
                 this._pulseFrequency = value;
                 OnPropertyChanged(nameof(this.PulseFrequency));
                 OnPropertyChanged(nameof(this.PulseWidth));

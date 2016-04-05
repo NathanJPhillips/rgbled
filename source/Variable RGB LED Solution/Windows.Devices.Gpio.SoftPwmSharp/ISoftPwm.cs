@@ -16,12 +16,13 @@
 // along with SoftPwmSharp.  If not, see http://www.gnu.org/licenses/.
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Windows.Devices.Gpio.SoftPwmSharp
 {
-	public interface ISoftPwm : IDisposable
-	{
+	public interface ISoftPwm : INotifyPropertyChanged, IDisposable
+    {
 		GpioPin Pin { get; }
 		double PulseFrequency { get; set; }
         TimeSpan PulseWidth { get; }
