@@ -56,11 +56,16 @@ namespace Windows.Devices.Gpio.SoftPwmSharp
             PulseFrequency = 100;
 		}
 
-		/// <summary>
-		/// Gets the underlying Windows.Devices.Gpio.GpioPin instance that this SoftPwm instance
-		/// is controlling.
-		/// </summary>
-		public GpioPin Pin { get; private set; }
+        public SoftPwm(GpioController gpio, int pinNumber)
+            : this(gpio.OpenPin(pinNumber, GpioSharingMode.Exclusive))
+        {
+        }
+
+        /// <summary>
+        /// Gets the underlying Windows.Devices.Gpio.GpioPin instance that this SoftPwm instance
+        /// is controlling.
+        /// </summary>
+        public GpioPin Pin { get; private set; }
 
         private double _pulseFrequency;
         /// <summary>
