@@ -113,7 +113,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PulseWidthChangedEventArgs.cs" />
     <Compile Include="SoftPwm.cs" />
-    <Compile Include="SoftPwmExtensions.cs" />
     <Content Include="COPYING.txt" />
     <Content Include="Properties\Windows.Devices.Gpio.SoftPwmSharp.rd.xml" />
   </ItemGroup>

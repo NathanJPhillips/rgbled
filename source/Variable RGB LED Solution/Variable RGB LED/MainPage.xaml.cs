@@ -122,12 +122,9 @@ namespace Porrey.RgbLed
                 if (gpio != null)
 				{
 					// Setup the three pins as Soft PWM
-					RedPwm = gpio.OnPin(Constants.Pin.Red)
-                        .AsExclusive().Open().AssignSoftPwm();
-                    GreenPwm = gpio.OnPin(Constants.Pin.Green)
-                        .AsExclusive().Open().AssignSoftPwm();
-                    BluePwm = gpio.OnPin(Constants.Pin.Blue)
-                        .AsExclusive().Open().AssignSoftPwm();
+					RedPwm = new SoftPwm(gpio, Constants.Pin.Red);
+                    GreenPwm = new SoftPwm(gpio, Constants.Pin.Green);
+                    BluePwm = new SoftPwm(gpio, Constants.Pin.Blue);
 				}
 
                 // Initialize these so the user can interact with the application
